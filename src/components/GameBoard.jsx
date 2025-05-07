@@ -7,29 +7,26 @@ const initialGameBoard = [
   [null, null, null],
 ];
 
-export default function GameBoard({ onSelectSquare, activePlayerSymbol }) {
-  const [gameBoard, setGameBoard] = React.useState(initialGameBoard);
+export default function GameBoard({ onSelectSquare, turns }) {
+  let gameBoard = initialGameBoard;
 
-  const handleSelectSquare = (rowIndex, cellIndex) => {
-    setGameBoard((prevGameBoard) => {
-      const newGameBoard = [
-        ...prevGameBoard.map((innerArray) => [...innerArray]),
-      ];
-      newGameBoard[rowIndex][cellIndex] = activePlayerSymbol;
-      return [...newGameBoard];
-    });
-    onSelectSquare();
-  };
+  for (const turn of turns) {
+    const { square, player } = turn;
+    const { row, col } = square;
 
+    if (gameBoard[row][col] === null) {
+      gameBoard[row][col] = player;
+    }
+  }
   return (
     <ol id="game-board">
       {gameBoard.map((row, rowIndex) => (
         <li key={rowIndex} className="game-row">
           <ol>
-            {row.map((playerSymbol, cellIndex) => (
+            {row.map((playerSymbol, colIndex) => (
               <button
-                key={cellIndex}
-                onClick={() => handleSelectSquare(rowIndex, cellIndex)}
+                key={colIndex}
+                onClick={() => onSelectSquare(rowIndex, colIndex)}
                 className="game-cell"
               >
                 {playerSymbol}
